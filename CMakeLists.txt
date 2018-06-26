@@ -3,4 +3,4 @@ project(sequence__)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(sequence__ source/main.cpp headers/fileio.h headers/FrequencyTable.h source/FrequencyTable.cpp)
+add_executable(sequence__ source/main.cpp headers/fileio.h headers/FrequencyTable.h source/FrequencyTable.cpp source/TANSEncoder.cpp headers/TANSEncoder.h source/FileOutput.cpp headers/FileOutput.h source/BitOutputStream.cpp headers/BitOutputStream.h)

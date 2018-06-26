@@ -1,11 +1,10 @@
-
-
-#include <cstdio>
-#include <cstdint>
-#include <iostream>
 #include "../headers/FrequencyTable.h"
+#include "../headers/TANSEncoder.h"
 
 int main() {
+
+    TANSEncoder* encoder = new TANSEncoder();
+    encoder->encode("book1","book1.tans");
 
 //    ifstream inStream;
 //    inStream.open("book1",std::ios::binary);
@@ -30,30 +29,32 @@ int main() {
 //    std::cout << "Hello, World!" << std::endl;
 //
 
-    FILE *file = fopen("book1", "rb");
-
-    fseek(file, 0, SEEK_END);
-    size_t fileSize = ftell(file);
-    fseek(file, 0, SEEK_SET);
-
-    uint8_t *buffer = new uint8_t[fileSize];
-    uint32_t *frequencies = new uint32_t[256];
-
-    fread(buffer, sizeof(uint8_t), fileSize, file);
-    fclose(file);
-
-    uint32_t total = 0;
-    for (int i = 0; i < fileSize; i++) {
-        std::cout << unsigned(buffer[i]) << std::endl;
-        frequencies[buffer[i]]++;
-        total++;
-    }
-
-    FrequencyTable frequencyTable = FrequencyTable(frequencies, total);
-    uint32_t *scaledFrequencies = frequencyTable.scale(2048);
-
-
-    std::cout << "done" << std::endl;
+//    FILE *file = fopen("book1", "rb");
+//
+//    fseek(file, 0, SEEK_END);
+//    size_t fileSize = ftell(file);
+//    fseek(file, 0, SEEK_SET);
+//
+//    uint8_t *buffer = new uint8_t[fileSize];
+//    uint32_t *frequencies = new uint32_t[256];
+//
+//    fread(buffer, sizeof(uint8_t), fileSize, file);
+//    fclose(file);
+//
+//    uint32_t total = 0;
+//    for (int i = 0; i < fileSize; i++) {
+////        std::cout << unsigned(buffer[i]) << std::endl;
+//        frequencies[buffer[i]]++;
+//        total++;
+//    }
+//
+//    FrequencyTable frequencyTable = FrequencyTable(256, frequencies, total, 2048);
+//    frequencyTable.scale();
+//    uint32_t correction = frequencyTable.getCorrection();
+//    frequencyTable.correctScaling();
+//
+//
+//    std::cout << "done" << std::endl;
 
     //count the frequencies
 
