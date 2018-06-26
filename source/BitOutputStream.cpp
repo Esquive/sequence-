@@ -4,8 +4,8 @@
 
 #include "../headers/BitOutputStream.h"
 
-BitOutputStream::BitOutputStream(uint8_t* buffer) {
-this->buffer = buffer;
+BitOutputStream::BitOutputStream(uint8_t *buffer) {
+    this->buffer = buffer;
 }
 
 BitOutputStream::~BitOutputStream() {
@@ -13,19 +13,29 @@ BitOutputStream::~BitOutputStream() {
 }
 
 void BitOutputStream::writeBit(uint8_t bit) {
-    if(bit > 1){
+    if (bit > 1) {
         //TODO: Panic
     }
     currByte = (currByte << 1) | bit;
     bitsWritten++;
-    if(bitsWritten == 8){
-        buffer[currentBufferPostion] = currByte;
+    if (bitsWritten == 8) {
+        buffer[currentBufferPosition] = currByte;
         currByte = 0;
         bitsWritten = 0;
-        currentBufferPostion++;
+        currentBufferPosition++;
     }
 }
 
-uint8_t BitOutputStream::getCurrentBufferPosition() {
-    return currentBufferPostion;
+uint32_t BitOutputStream::getCurrentBufferPosition() {
+    return currentBufferPosition;
+}
+
+void BitOutputStream::flush() {
+    if (bitsWritten > 0) {
+        buffer[currentBufferPosition] = currByte;
+        //No update to the currentBufferPosition,
+        //we will use this value for the file write.
+        currByte = 0;
+        bitsWritten = 0;
+    }
 }

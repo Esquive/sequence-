@@ -60,7 +60,6 @@ void FrequencyTable::correctScaling() {
 
     SymbolCorrectionDeltaTuple iter;
     while (correction != 0) {
-
         iter = deltas.front();
         pop_heap(deltas.begin(), deltas.end());
         deltas.pop_back();

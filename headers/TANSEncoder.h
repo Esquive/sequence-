@@ -58,7 +58,7 @@ private:
     void buildStateTable();
     void writeFinalState();
     void writeStateTable(const string &destFile);
-
+    void writeCode(const string &destFile);
 
 public:
     TANSEncoder(){};

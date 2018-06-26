@@ -13,7 +13,7 @@ class BitOutputStream {
 
 private:
 
-    uint32_t currentBufferPostion = 0;
+    uint32_t currentBufferPosition = 0;
     uint8_t currByte = 0;
     uint8_t bitsWritten = 0;
     uint8_t *buffer;
@@ -23,7 +23,8 @@ public:
     ~BitOutputStream();
 
     void writeBit(uint8_t bit);
-    uint8_t getCurrentBufferPosition();
+    uint32_t getCurrentBufferPosition();
+    void flush();
 };
 
 

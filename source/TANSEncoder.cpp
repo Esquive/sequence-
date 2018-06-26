@@ -53,12 +53,15 @@ bool TANSEncoder::encode(uint alphabetSize, const string &srcFile, const string 
 
 
         //TODO: Get a better approximation and create an ouputStream that handle buffer overflows
-        outputBuffer = new uint8_t[fileSize];
-        bitEncoder = new BitOutputStream(outputBuffer);
-        for (int i = 0; i < fileSize; i++) {
-            encodeSymbol(buffer[i]);
-        }
-        writeFinalState();
+//        outputBuffer = new uint8_t[fileSize];
+//        bitEncoder = new BitOutputStream(outputBuffer);
+//        for (int i = 0; i < fileSize; i++) {
+//            encodeSymbol(buffer[i]);
+//        }
+//        writeFinalState();
+//        bitEncoder->flush();
+//        writeCode(destFile);
+
         return true;
     } else {
         //TODO: Panic the source file does not exist
@@ -83,6 +86,8 @@ bool TANSEncoder::encodeSymbol(uint8_t byte) {
 void TANSEncoder::buildStateTable() {
 
     vector<SymbolStateEncodingTuple> states;
+//    states.reserve(this->m);
+//    make_heap(states.begin(), states.end());
     //TODO: reverse the size of states;
 
     uint32_t *scaledFrequencies = frequencyTable->getScaledFrequencies();
@@ -92,21 +97,27 @@ void TANSEncoder::buildStateTable() {
                     SymbolStateEncodingTuple{(uint8_t) i,
                                              (uint32_t) round(this->m * position / (double) scaledFrequencies[i])}
             );
+//            push_heap(states.begin(), states.end());
         }
     }
 
-    make_heap(states.begin(), states.end());
-    sort_heap(states.begin(), states.end());
+    stable_sort(states.begin(), states.end());
+//    sort_heap(states.begin(), states.end());
     uint32_t nextState = 0;
 
+//    while (states.size() > 0) {
     for (unsigned i = 0; i < states.size(); i++) {
         auto it = states[i];
+//        auto it = states.front();
+//        pop_heap(states.begin(), states.end());
+//        states.pop_back();
         it.state = scaledFrequencies[it.symbol];
         stateTable.insert(make_pair(it, (nextState + this->m)));
 
         scaledFrequencies[it.symbol] += 1;
         nextState += 1;
     }
+
 
     //Clean the resources
     states.clear();
@@ -152,4 +163,14 @@ void TANSEncoder::writeFinalState() {
         bitEncoder->writeBit(val);
         iterator >>= 1;
     }
+}
+
+void TANSEncoder::writeCode(const string &destFile) {
+
+    FILE *pFile = fopen(destFile.c_str(), "ab");
+//    fseek(pFile, 0, SEEK_END);
+    fwrite(outputBuffer, sizeof(uint8_t), bitEncoder->getCurrentBufferPosition(), pFile);
+
+    //Cleanup
+    fclose(pFile);
 }
