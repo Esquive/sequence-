@@ -53,12 +53,12 @@ bool TANSEncoder::encode(uint alphabetSize, const string &srcFile, const string 
 
 
         //TODO: Get a better approximation and create an ouputStream that handle buffer overflows
-        outputBuffer = new uint8_t[fileSize / 2];
+        outputBuffer = new uint8_t[fileSize];
         bitEncoder = new BitOutputStream(outputBuffer);
         for (int i = 0; i < fileSize; i++) {
             encodeSymbol(buffer[i]);
-//                    cout << unsigned(buffer[i]);
         }
+        writeFinalState();
         return true;
     } else {
         //TODO: Panic the source file does not exist
@@ -69,33 +69,20 @@ bool TANSEncoder::encode(uint alphabetSize, const string &srcFile, const string 
 bool TANSEncoder::encodeSymbol(uint8_t byte) {
     SymbolStateEncodingTuple tuple = SymbolStateEncodingTuple{byte, currentState};
 
-    for (pair<SymbolStateEncodingTuple, uint> element : stateTable) {
-        cout << element.first.symbol << " :: " << element.first.state << " :: "<< element.second << std::endl;
-    }
-
-//    cout << "Symbol: " << unsigned(byte) << " State: " << currentState << endl;
     uint8_t currBit = 0;
-
-
-//    unordered_map<SymbolStateEncodingTuple, uint>::iterator it = stateTable.find(tuple);
-//
-    while ( stateTable.find(tuple) == stateTable.end()) {
+    while (stateTable.find(tuple) == stateTable.end()) {
         currBit = currentState & 1;
         currentState = currentState >> 1;
         bitEncoder->writeBit(currBit);
         tuple.state = currentState;
     }
-//    stateTable[currentState];
-//
-    bool found = (stateTable.find(tuple) == stateTable.end());
-    currentState = stateTable[ tuple ];
+    currentState = stateTable[tuple];
     return true;
 }
 
 void TANSEncoder::buildStateTable() {
 
     vector<SymbolStateEncodingTuple> states;
-    vector<SymbolStateEncodingTuple>::iterator it;
     //TODO: reverse the size of states;
 
     uint32_t *scaledFrequencies = frequencyTable->getScaledFrequencies();
@@ -103,21 +90,21 @@ void TANSEncoder::buildStateTable() {
         for (int position = 1; position <= scaledFrequencies[i]; position++) {
             states.push_back(
                     SymbolStateEncodingTuple{(uint8_t) i,
-                                             (uint) round(this->m * position / (double) scaledFrequencies[i])}
+                                             (uint32_t) round(this->m * position / (double) scaledFrequencies[i])}
             );
         }
     }
 
     make_heap(states.begin(), states.end());
-    uint nextState = 0;
+    sort_heap(states.begin(), states.end());
+    uint32_t nextState = 0;
 
-    for (it = states.begin(); it != states.end(); it++) {
-        uint8_t symbol = (*it).symbol;
-        uint state = (*it).state;
-        (*it).state = scaledFrequencies[(*it).symbol];
-        stateTable.insert(make_pair(*it, (nextState + this->m)));
+    for (unsigned i = 0; i < states.size(); i++) {
+        auto it = states[i];
+        it.state = scaledFrequencies[it.symbol];
+        stateTable.insert(make_pair(it, (nextState + this->m)));
 
-        scaledFrequencies[(*it).symbol] += 1;
+        scaledFrequencies[it.symbol] += 1;
         nextState += 1;
     }
 
@@ -131,7 +118,6 @@ void TANSEncoder::writeStateTable(const string &destFile) {
     //Sort the keys
     uint8_t *buffer = new uint8_t[stateTable.size()];
 
-//    uint8_t* buffer2 = (uint8_t *)malloc(stateTable.size()*sizeof(uint8_t));
     std::vector<SymbolStateEncodingTuple> keys;
 
     int size = stateTable.size();
@@ -156,4 +142,14 @@ void TANSEncoder::writeStateTable(const string &destFile) {
     delete[] buffer;
     keys.clear();
     keys.shrink_to_fit();
+}
+
+void TANSEncoder::writeFinalState() {
+    uint32_t iterator = currentState;
+    uint8_t val;
+    while (iterator != 0) {
+        val = iterator & 1;
+        bitEncoder->writeBit(val);
+        iterator >>= 1;
+    }
 }

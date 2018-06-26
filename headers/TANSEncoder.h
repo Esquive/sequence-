@@ -14,10 +14,10 @@ using namespace std;
 
 typedef struct SymbolStateEncodingTuple{
     uint8_t symbol;
-    uint state;
+    uint32_t state;
 
     bool operator<(const SymbolStateEncodingTuple &obj) const {
-        return (obj.state < state);
+        return (state < obj.state);
     }
 
     bool operator==(const SymbolStateEncodingTuple &obj) const {
@@ -56,6 +56,7 @@ private:
 
 
     void buildStateTable();
+    void writeFinalState();
     void writeStateTable(const string &destFile);
 
 
