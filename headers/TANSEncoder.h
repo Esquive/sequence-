@@ -17,7 +17,7 @@ typedef struct SymbolStateEncodingTuple{
     uint state;
 
     bool operator<(const SymbolStateEncodingTuple &obj) const {
-        return (state < obj.state);
+        return (obj.state < state);
     }
 
     bool operator==(const SymbolStateEncodingTuple &obj) const {

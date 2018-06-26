@@ -69,10 +69,9 @@ bool TANSEncoder::encode(uint alphabetSize, const string &srcFile, const string 
 bool TANSEncoder::encodeSymbol(uint8_t byte) {
     SymbolStateEncodingTuple tuple = SymbolStateEncodingTuple{byte, currentState};
 
-//    for (pair<SymbolStateEncodingTuple, uint> element : stateTable) {
-//        cout << element.first.symbol << " :: " << element.second << std::endl;
-//    }
-//    auto it =stateTable.find(tuple);
+    for (pair<SymbolStateEncodingTuple, uint> element : stateTable) {
+        cout << element.first.symbol << " :: " << element.first.state << " :: "<< element.second << std::endl;
+    }
 
 //    cout << "Symbol: " << unsigned(byte) << " State: " << currentState << endl;
     uint8_t currBit = 0;
@@ -88,6 +87,7 @@ bool TANSEncoder::encodeSymbol(uint8_t byte) {
     }
 //    stateTable[currentState];
 //
+    bool found = (stateTable.find(tuple) == stateTable.end());
     currentState = stateTable[ tuple ];
     return true;
 }
@@ -103,7 +103,7 @@ void TANSEncoder::buildStateTable() {
         for (int position = 1; position <= scaledFrequencies[i]; position++) {
             states.push_back(
                     SymbolStateEncodingTuple{(uint8_t) i,
-                                             (uint8_t) round(4096 * position / (double) scaledFrequencies[i])}
+                                             (uint) round(this->m * position / (double) scaledFrequencies[i])}
             );
         }
     }
@@ -112,6 +112,8 @@ void TANSEncoder::buildStateTable() {
     uint nextState = 0;
 
     for (it = states.begin(); it != states.end(); it++) {
+        uint8_t symbol = (*it).symbol;
+        uint state = (*it).state;
         (*it).state = scaledFrequencies[(*it).symbol];
         stateTable.insert(make_pair(*it, (nextState + this->m)));
 
