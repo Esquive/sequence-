@@ -3,7 +3,7 @@
 //
 
 
-#include "../headers/TANSEncoder.h"
+#include "TANSEncoder.h"
 
 TANSEncoder::~TANSEncoder() {
     delete this->frequencyTable;
@@ -167,8 +167,10 @@ void TANSEncoder::writeFinalState() {
 
 void TANSEncoder::writeCode(const string &destFile) {
 
+    //TODO: Wrap the byte stream in a backward reading buffer.
+
+
     FILE *pFile = fopen(destFile.c_str(), "ab");
-//    fseek(pFile, 0, SEEK_END);
     fwrite(outputBuffer, sizeof(uint8_t), bitEncoder->getCurrentBufferPosition(), pFile);
 
     //Cleanup

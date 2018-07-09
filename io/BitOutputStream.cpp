@@ -2,7 +2,7 @@
 // Created by Eric Falk on 26.06.18.
 //
 
-#include "../headers/BitOutputStream.h"
+#include "BitOutputStream.h"
 
 BitOutputStream::BitOutputStream(uint8_t *buffer) {
     this->buffer = buffer;

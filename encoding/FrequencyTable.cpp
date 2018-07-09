@@ -3,7 +3,7 @@
 //
 
 
-#include "../headers/FrequencyTable.h"
+#include "FrequencyTable.h"
 
 FrequencyTable::FrequencyTable(uint32_t alphabetSize, uint32_t *frequencies, uint32_t total, uint32_t scaleTarget) {
 

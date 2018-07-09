@@ -9,7 +9,7 @@
 //#include <tclDecls.h>
 #include <unordered_map>
 #include "FrequencyTable.h"
-#include "BitOutputStream.h"
+#include "../io/BitOutputStream.h"
 using namespace std;
 
 typedef struct SymbolStateEncodingTuple{
