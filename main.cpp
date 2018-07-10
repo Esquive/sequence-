@@ -5,8 +5,8 @@
 int main() {
 
     //TODO: TEST the Encoder
-//    TANSEncoder* encoder = new TANSEncoder();
-//    encoder->encode("book1","book1.tans");
+    TANSEncoder* encoder = new TANSEncoder();
+    encoder->encode("book1","book1cpp.tans");
 
     //TODO: Test the reverse BitStream
 
@@ -14,23 +14,32 @@ int main() {
     //1111 0000
     //0000 1111
     //1000 1101
-    uint8_t values[] = {170,240,15,141};
-    ReverseBitReader* reader = new ReverseBitReader(values, 4);
+//    uint8_t values[] = {170,240,15,141};
+//    ReverseBitReader* reader = new ReverseBitReader(values, 4);
+//
+//
+//    int read = 0;
+//    int counter = 0;
+//    while( (read = reader->getNextBit()) != -1){
+//        cout << unsigned(read);
+//        counter++;
+//        if(counter == 4){
+//            cout << " ";
+//        } else if (counter == 8) {
+//            cout << endl;
+//            counter = 0;
+//        }
+//
+//    }
 
 
-    int read = 0;
-    int counter = 0;
-    while( (read = reader->getNextBit()) != -1){
-        cout << unsigned(read);
-        counter++;
-        if(counter == 4){
-            cout << " ";
-        } else if (counter == 8) {
-            cout << endl;
-            counter = 0;
-        }
 
-    }
+
+
+
+
+
+
 
 //    uint32_t value = 1;
 //    void* pointer = (void*)&value;

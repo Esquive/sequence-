@@ -31,3 +31,7 @@ int8_t ReverseBitReader::getNextBit() {
     readFromByte++;
     return returnValue;
 }
+
+ReverseBitReader::~ReverseBitReader() {
+    //THe buffer is supposed to be deleted from outside.
+}

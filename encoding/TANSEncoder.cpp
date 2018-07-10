@@ -4,6 +4,7 @@
 
 
 #include "TANSEncoder.h"
+#include "../util/ReverseBitReader.h"
 
 TANSEncoder::~TANSEncoder() {
     delete this->frequencyTable;
@@ -53,14 +54,15 @@ bool TANSEncoder::encode(uint alphabetSize, const string &srcFile, const string 
 
 
         //TODO: Get a better approximation and create an ouputStream that handle buffer overflows
-//        outputBuffer = new uint8_t[fileSize];
-//        bitEncoder = new BitOutputStream(outputBuffer);
-//        for (int i = 0; i < fileSize; i++) {
-//            encodeSymbol(buffer[i]);
-//        }
-//        writeFinalState();
-//        bitEncoder->flush();
-//        writeCode(destFile);
+        outputBuffer = new uint8_t[fileSize];
+        bitEncoder = new BitOutputStream(outputBuffer);
+        for (int i = fileSize-1 ; i >= 0; i--) {
+            encodeSymbol(buffer[i]);
+        }
+        writeFinalState();
+        bitEncoder->flush();
+
+        writeCode(destFile);
 
         return true;
     } else {
@@ -86,8 +88,6 @@ bool TANSEncoder::encodeSymbol(uint8_t byte) {
 void TANSEncoder::buildStateTable() {
 
     vector<SymbolStateEncodingTuple> states;
-//    states.reserve(this->m);
-//    make_heap(states.begin(), states.end());
     //TODO: reverse the size of states;
 
     uint32_t *scaledFrequencies = frequencyTable->getScaledFrequencies();
@@ -97,27 +97,20 @@ void TANSEncoder::buildStateTable() {
                     SymbolStateEncodingTuple{(uint8_t) i,
                                              (uint32_t) round(this->m * position / (double) scaledFrequencies[i])}
             );
-//            push_heap(states.begin(), states.end());
         }
     }
 
     stable_sort(states.begin(), states.end());
-//    sort_heap(states.begin(), states.end());
     uint32_t nextState = 0;
 
-//    while (states.size() > 0) {
     for (unsigned i = 0; i < states.size(); i++) {
         auto it = states[i];
-//        auto it = states.front();
-//        pop_heap(states.begin(), states.end());
-//        states.pop_back();
         it.state = scaledFrequencies[it.symbol];
         stateTable.insert(make_pair(it, (nextState + this->m)));
 
         scaledFrequencies[it.symbol] += 1;
         nextState += 1;
     }
-
 
     //Clean the resources
     states.clear();
@@ -129,19 +122,31 @@ void TANSEncoder::writeStateTable(const string &destFile) {
     //Sort the keys
     uint8_t *buffer = new uint8_t[stateTable.size()];
 
-    std::vector<SymbolStateEncodingTuple> keys;
 
+    // Declaring the type of Predicate that accepts 2 pairs and return a bool
+    typedef std::function<bool(pair<SymbolStateEncodingTuple, uint>, pair<SymbolStateEncodingTuple, uint>)> Comparator;
+
+    // Defining a lambda function to compare two pairs. It will compare two pairs using second field
+    Comparator compFunctor =
+            [](pair<SymbolStateEncodingTuple, uint> elem1 ,pair<SymbolStateEncodingTuple, uint> elem2)
+            {
+                    return elem1.second < elem2.second;
+            };
+
+    std::vector<pair<SymbolStateEncodingTuple, uint>> keys;
     int size = stateTable.size();
 
     keys.reserve(stateTable.size());
     for (auto &it : stateTable) {
-        keys.push_back(it.first);
+        keys.push_back(it);
     }
 
-    std::sort(keys.begin(), keys.end());
+    //TODO: Move the Lambda here
+    std::sort(keys.begin(), keys.end(),compFunctor);
     int index = 0;
     for (auto &it : keys) {
-        buffer[index] = it.symbol;
+        buffer[index] = it.first.symbol;
+        index++;
     }
 
     FILE *pFile = fopen(destFile.c_str(), "wb");
@@ -167,12 +172,20 @@ void TANSEncoder::writeFinalState() {
 
 void TANSEncoder::writeCode(const string &destFile) {
 
-    //TODO: Wrap the byte stream in a backward reading buffer.
-
-
+    ReverseBitReader* reverseBitReader = new ReverseBitReader(outputBuffer, bitEncoder->getCurrentBufferPosition());
+    uint8_t* output = new uint8_t[bitEncoder->getCurrentBufferPosition()];
+    BitOutputStream* bitOutput = new BitOutputStream(output);
+    int read = -1;
+    while((read = reverseBitReader->getNextBit()) != -1){
+        bitOutput->writeBit(read);
+    }
+    bitOutput->flush();
     FILE *pFile = fopen(destFile.c_str(), "ab");
-    fwrite(outputBuffer, sizeof(uint8_t), bitEncoder->getCurrentBufferPosition(), pFile);
+    fwrite(output, sizeof(uint8_t), bitOutput->getCurrentBufferPosition(), pFile);
 
     //Cleanup
     fclose(pFile);
+    delete[] output;
+    delete bitOutput;
+    delete reverseBitReader;
 }

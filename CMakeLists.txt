@@ -18,4 +18,4 @@ add_executable(sequence__ main.cpp
         util/ByteBuffer.cpp
         util/ByteBuffer.h
         util/ByteBuffer.cpp
-        util/ByteBuffer.h util/ReverseBitReader.cpp util/ReverseBitReader.h)
+        util/ByteBuffer.h util/ReverseBitReader.cpp util/ReverseBitReader.h encoding/TANSDecoder.cpp encoding/TANSDecoder.h)

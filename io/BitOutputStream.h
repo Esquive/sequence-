@@ -24,6 +24,7 @@ public:
 
     void writeBit(uint8_t bit);
     uint32_t getCurrentBufferPosition();
+    uint32_t getBufferSize();
     void flush();
 };
 

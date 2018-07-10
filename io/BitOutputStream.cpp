@@ -31,11 +31,20 @@ uint32_t BitOutputStream::getCurrentBufferPosition() {
 }
 
 void BitOutputStream::flush() {
-    if (bitsWritten > 0) {
-        buffer[currentBufferPosition] = currByte;
-        //No update to the currentBufferPosition,
-        //we will use this value for the file write.
-        currByte = 0;
-        bitsWritten = 0;
+    while(bitsWritten != 0){
+        this->writeBit(0);
     }
+
+//    //TODO: maybe decrement the bufferposition again.
+//    if (bitsWritten > 0) {
+//        buffer[currentBufferPosition] = currByte;
+//        //No update to the currentBufferPosition,
+//        //we will use this value for the file write.
+//        currByte = 0;
+//        bitsWritten = 0;
+//    }
+}
+
+uint32_t BitOutputStream::getBufferSize() {
+    return currentBufferPosition - 1;
 }
