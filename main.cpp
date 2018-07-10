@@ -1,12 +1,18 @@
 #include "encoding/FrequencyTable.h"
 #include "encoding/TANSEncoder.h"
+#include "encoding/TANSDecoder.h"
 #include "util/ReverseBitReader.h"
 
 int main() {
 
     //TODO: TEST the Encoder
-    TANSEncoder* encoder = new TANSEncoder();
-    encoder->encode("book1","book1cpp.tans");
+//    TANSEncoder* encoder = new TANSEncoder();
+//    encoder->encode("book1","book1cpp.tans");
+
+
+
+    TANSDecoder* decoder = new TANSDecoder();
+    decoder->decode("book1cpp.tans", "book1uncomp");
 
     //TODO: Test the reverse BitStream
 

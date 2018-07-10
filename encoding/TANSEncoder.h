@@ -54,7 +54,6 @@ private:
     uint8_t* outputBuffer;
     BitOutputStream* bitEncoder;
 
-
     void buildStateTable();
     void writeFinalState();
     void writeStateTable(const string &destFile);
