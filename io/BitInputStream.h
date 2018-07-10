@@ -23,9 +23,6 @@ public:
 
     void getNextBit();
     uint32_t getCurrentBufferPosition();
-    void flush();
-
-
 };
 
 
