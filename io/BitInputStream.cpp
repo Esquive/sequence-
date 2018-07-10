@@ -9,7 +9,7 @@ BitInputStream::BitInputStream(uint8_t *buffer) {
 }
 
 BitInputStream::~BitInputStream() {
-
+    //Do nothing here the buffer is supposed to be deleted from outside. 
 }
 
 void BitInputStream::getNextBit() {
