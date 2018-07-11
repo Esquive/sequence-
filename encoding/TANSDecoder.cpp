@@ -4,6 +4,7 @@
 
 
 #include "TANSDecoder.h"
+#include "../io/BitInputStream.h"
 
 TANSDecoder::~TANSDecoder() {
     this->stateTable.clear();
@@ -66,13 +67,18 @@ void TANSDecoder::decode(const string &srcFile, const string &destFile) {
         uint8_t *compressedContent = new uint8_t[fileSize - stateTableSize];
         fread(compressedContent, sizeof(uint8_t), fileSize - stateTableSize, file);
 
+        BitInputStream* bitInput = new BitInputStream(compressedContent, fileSize - stateTableSize);
+
 //        uint32_t counter = 0;
         vector<uint8_t> uncompressedContent;
         //Entering the decoding loop
-        for (int i = 0; i < (fileSize - stateTableSize); i++) {
-
+//        for (int i = 0; i < (fileSize - stateTableSize); i++) {
+//
+//        }
+        int8_t read = -1;
+        while( (read = bitInput->getNextBit()) != -1){
+            cout << (int)read << endl;
         }
-
 
         cout << "Done reading the state table!" << endl;
     }

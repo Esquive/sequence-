@@ -13,15 +13,18 @@ class BitInputStream {
 private:
 
     uint32_t currentBufferPosition = 0;
+    uint32_t bufferSize;
     uint8_t currByte = 0;
-    uint8_t bitsRead = 0;
+    uint8_t bitsRemaining = 8;
     uint8_t *buffer;
 
+    bool hasRemaining();
+
 public:
-    BitInputStream(uint8_t *buffer);
+    BitInputStream(uint8_t *buffer, uint32_t bufferSize);
     ~BitInputStream();
 
-    void getNextBit();
+    int8_t getNextBit();
     uint32_t getCurrentBufferPosition();
 };
 
