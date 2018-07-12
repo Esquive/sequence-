@@ -6,8 +6,8 @@
 int main() {
 
     //TODO: TEST the Encoder
-//    TANSEncoder* encoder = new TANSEncoder();
-//    encoder->encode("book1","book1cpp.tans");
+    TANSEncoder* encoder = new TANSEncoder();
+    encoder->encode("book1","book1cpp.tans");
 
 
 

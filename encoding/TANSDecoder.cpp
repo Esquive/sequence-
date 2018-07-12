@@ -21,14 +21,14 @@ void TANSDecoder::readStateTable(uint8_t *symbols) {
     symbolFrequencyTable.reserve(256);
 
     for (int i = 0; i < stateTableSize; i++) {
-        symbolFrequencyTable[i].push_back(i + stateTableSize);
+        symbolFrequencyTable[symbols[i]].push_back(i + stateTableSize);
     }
 
-    for (uint8_t i = 0; i < symbolFrequencyTable.size(); i++) {
+    for (int i = 0; i < 256; i++) {
         auto currentState = symbolFrequencyTable[i];
         uint32_t index = 0;
         for (auto it = currentState.begin(); it != currentState.end(); it++, index++) {
-            stateTable.insert({*it, StateDecodingTuple{i, index + (uint32_t) currentState.size()}});
+            stateTable.insert({*it, StateDecodingTuple{(uint8_t )i, index + (uint32_t) currentState.size()}});
         }
     }
 
@@ -69,18 +69,40 @@ void TANSDecoder::decode(const string &srcFile, const string &destFile) {
 
         BitInputStream* bitInput = new BitInputStream(compressedContent, fileSize - stateTableSize);
 
-//        uint32_t counter = 0;
+        for (auto it = stateTable.begin(); it != stateTable.end(); it++) {
+            cout << it->first << endl;
+        }
+        int size = stateTable.size();
+
+        //TODO: Make this parts as parameters
         vector<uint8_t> uncompressedContent;
-        //Entering the decoding loop
-//        for (int i = 0; i < (fileSize - stateTableSize); i++) {
-//
-//        }
-        int8_t read = -1;
-        while( (read = bitInput->getNextBit()) != -1){
-            cout << (int)read << endl;
+        uint32_t currentState = 0;
+        int8_t nextBit = -1;
+        while( (nextBit = bitInput->getNextBit()) != -1){
+            if(currentState >= 2048) {
+
+                if (currentState == (2048 * 2) - 1) {
+                    cout << "Maxstate Reached" << endl;
+                }
+                auto symbolAndState = stateTable.find(currentState);
+                if(symbolAndState != stateTable.end()){
+                    uncompressedContent.push_back(symbolAndState->second.symbol);
+                    currentState = symbolAndState->second.previousState;
+                } else {
+                    cout << "State not found: " << currentState << endl;
+                }
+            }
+            currentState <<= 1;
+            currentState = currentState | nextBit;
         }
 
-        cout << "Done reading the state table!" << endl;
+        if(FILE *output = fopen(destFile.c_str(), "wb")){
+            fwrite(&uncompressedContent[0], sizeof(uint8_t),uncompressedContent.size(),output);
+            fclose(output);
+        }
+
+        fclose(file);
+
     }
 
 }
