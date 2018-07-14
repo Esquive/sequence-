@@ -22,14 +22,13 @@ typedef struct StateDecodingTuple{
 class TANSDecoder {
 private:
     unordered_map<uint16_t, StateDecodingTuple> stateTable;
-
     void readStateTable(uint8_t* states);
 
 public:
     TANSDecoder(){};
     ~TANSDecoder();
 
-    void decode(const string &srcFile, const string &destFile);
+    void decode(const std::string &srcFile, const std::string &destFile);
 };
 
 

@@ -6,13 +6,17 @@
 int main() {
 
     //TODO: TEST the Encoder
+
+    clock_t tStart = clock();
+    /* Do your stuff here */
+
     TANSEncoder* encoder = new TANSEncoder();
     encoder->encode("book1","book1cpp.tans");
+    printf("Time taken: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
 
 
-
-    TANSDecoder* decoder = new TANSDecoder();
-    decoder->decode("book1cpp.tans", "book1uncomp");
+//    TANSDecoder* decoder = new TANSDecoder();
+//    decoder->decode("book1cpp.tans", "book1uncomp");
 
     //TODO: Test the reverse BitStream
 
