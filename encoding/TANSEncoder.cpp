@@ -25,8 +25,7 @@ bool TANSEncoder::encode(uint alphabetSize, const string &srcFile, const string 
     this->currentState = (m << 1) - 1;
 
 
-    //TODO: Remove the hardcoded file name.
-    if (FILE *file = fopen("book1", "rb")) {
+    if (FILE *file = fopen(srcFile.c_str(), "rb")) {
         fseek(file, 0, SEEK_END);
         size_t fileSize = ftell(file);
         fseek(file, 0, SEEK_SET);
