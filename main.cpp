@@ -1,18 +1,20 @@
+#include <cstdint>
 #include "encoding/FrequencyTable.h"
 #include "encoding/TANSEncoder.h"
 #include "encoding/TANSDecoder.h"
 #include "util/ReverseBitReader.h"
+#include "deduplication/SuffixArray.h"
 
 int main() {
 
     //TODO: TEST the Encoder
 
-    clock_t tStart = clock();
-    /* Do your stuff here */
-
-    TANSEncoder* encoder = new TANSEncoder();
-    encoder->encode("book1","book1cpp.tans");
-    printf("Time taken: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
+//    clock_t tStart = clock();
+//    /* Do your stuff here */
+//
+//    TANSEncoder* encoder = new TANSEncoder();
+//    encoder->encode("book1","book1cpp.tans");
+//    printf("Time taken: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
 
 
 //    TANSDecoder* decoder = new TANSDecoder();
@@ -63,20 +65,33 @@ int main() {
 ////        }
 //    }
 
+    SuffixArray* array = new SuffixArray( (uint8_t*)std::string("banana").c_str(),6);
 
 
-//    uint8_t* buffer = new uint8_t[4];
+//    uint8_t* buffer = new uint8_t[8];
 //    buffer[0] = 1;
 //    buffer[1] = 0;
 //    buffer[2] = 0;
 //    buffer[3] = 0;
 //
-//    uint32_t* value2 = ((uint32_t*)buffer);
+//    buffer[4] = 0;
+//    buffer[5] = 0;
+//    buffer[6] = 0;
+//    buffer[7] = 2;
+//
+//
+//    uint32_t* value2 = (uint32_t*)(buffer);
+//    uint32_t swap = __builtin_bswap32(*value2);
 //    cout << *value2 << endl;
+//    cout << swap << endl;
+//
+//    swap = __builtin_bswap32(value2[1]);
+//    cout << *(value2 +1) << endl;
+//    cout << swap << endl;
 //
 //    for(int i = 0; i < 8 ; i++){
 //        int val = buffer[0] & (128 >> i);
-////        buffer[0] = buffer[0] >> 1;
+//////        buffer[0] = buffer[0] >> 1;
 //        cout << val << endl;
 //    }
 //
