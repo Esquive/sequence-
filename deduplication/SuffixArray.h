@@ -15,8 +15,9 @@ public:
 
 private:
     Suffix mainSuffix;
-    void sort(uint32_t low, uint32_t high);
-
+    uint32_t index[6];
+    void sort(int low, int high, uint32_t suffixIndex);
+    void swap(int first, int second);
 };
 
 

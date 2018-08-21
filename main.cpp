@@ -65,7 +65,8 @@ int main() {
 ////        }
 //    }
 
-    SuffixArray* array = new SuffixArray( (uint8_t*)std::string("banana").c_str(),6);
+    auto name = std::string("This is a bananasplit");
+    SuffixArray* array = new SuffixArray( (uint8_t*)name.c_str(), name.length());
 
 
 //    uint8_t* buffer = new uint8_t[8];
