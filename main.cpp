@@ -9,9 +9,34 @@ int main() {
 
     //TODO: TEST the Encoder
 
-//    clock_t tStart = clock();
-//    /* Do your stuff here */
-//
+    clock_t tStart = clock();
+    double duration;
+
+
+    if (FILE *file = fopen(std::string("book1").c_str(), "rb")) {
+        fseek(file, 0, SEEK_END);
+        size_t fileSize = ftell(file);
+        fseek(file, 0, SEEK_SET);
+
+        uint8_t *fileBuffer = new uint8_t[fileSize];
+        fread(fileBuffer, sizeof(uint8_t), fileSize, file);
+        fclose(file);
+
+        uint8_t *scratchBuffer = new uint8_t[32 * 1024];
+        memcpy((void*)scratchBuffer, (void*)fileBuffer, 32 * 1024);
+
+        new SuffixArray(scratchBuffer,32*1024);
+
+//        return true;
+    } else {
+        //TODO: Panic the source file does not exist
+//        return false;
+    }
+
+    duration = ( std::clock() - tStart ) / (double) CLOCKS_PER_SEC;
+    std::cout<<"sorting arrays: "<< duration <<'\n';
+
+
 //    TANSEncoder* encoder = new TANSEncoder();
 //    encoder->encode("book1","book1cpp.tans");
 //    printf("Time taken: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
@@ -65,8 +90,8 @@ int main() {
 ////        }
 //    }
 
-    auto name = std::string("This is a bananasplit");
-    SuffixArray* array = new SuffixArray( (uint8_t*)name.c_str(), name.length());
+//    auto name = std::string("This is a bananasplit");
+//    SuffixArray* array = new SuffixArray( (uint8_t*)name.c_str(), name.length());
 
 
 //    uint8_t* buffer = new uint8_t[8];

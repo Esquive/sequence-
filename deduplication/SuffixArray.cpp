@@ -10,14 +10,17 @@
 using namespace std;
 
 SuffixArray::SuffixArray(uint8_t *text, uint32_t length) : mainSuffix(text, length) {
+
+    index = new uint32_t[length];
+
+
     for (int i = 0; i < length; i++) {
         index[i] = i;
     }
     sort(0, length - 1, 0);
-
-    for (int i = 0; i < length; i++) {
-        std::cout << std::string( (char*)(&text[index[i]]), length - index[i] ) << std::endl;
-    }
+//    for (int i = 0; i < length; i++) {
+//        std::cout << std::string( (char*)(&text[index[i]]), length - index[i] ) << std::endl;
+//    }
 }
 
 
