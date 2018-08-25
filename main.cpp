@@ -4,6 +4,7 @@
 #include "encoding/TANSDecoder.h"
 #include "util/ReverseBitReader.h"
 #include "deduplication/SuffixArray.h"
+#include "deduplication/ManberSuffixArray.h"
 
 int main() {
 
@@ -25,6 +26,7 @@ int main() {
         uint8_t *scratchBuffer = new uint8_t[32 * 1024];
         memcpy((void*)scratchBuffer, (void*)fileBuffer, 32 * 1024);
 
+//        new ManberSuffixArray(scratchBuffer,32*1024);
         new SuffixArray(scratchBuffer,32*1024);
 
 //        return true;
@@ -33,8 +35,17 @@ int main() {
 //        return false;
     }
 
+
+//    auto suffix = new ManberSuffixArray((uint8_t *)std::string("banana").c_str(), 6);
+
     duration = ( std::clock() - tStart ) / (double) CLOCKS_PER_SEC;
     std::cout<<"sorting arrays: "<< duration <<'\n';
+
+
+
+
+
+
 
 
 //    TANSEncoder* encoder = new TANSEncoder();

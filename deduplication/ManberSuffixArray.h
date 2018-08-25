@@ -18,12 +18,16 @@ private:
 
     Suffix mainSuffix;
     uint32_t* index;
-    uint32_t* rank;
+    int64_t* rank;
     uint32_t* newRank;
+    unsigned int offset;
 
-    void sort(int low, int high, uint32_t suffixIndex);
-    void swap(int first, int second);
-
+    void quicksort(uint32_t* array, int low, int high);
+    int partition(uint32_t* array, int low, int high);
+    void msd();
+    void buildArray();
+    inline void swap(uint32_t* array, int first, int second);
+    inline bool less(int first, int second);
 };
 
 

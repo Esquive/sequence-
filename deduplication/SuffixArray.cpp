@@ -50,7 +50,6 @@ void SuffixArray::sort(int low, int high, uint32_t suffixIndex) {
         if (lastIndex < mainSuffix.length) sort(leftmark, rightmark, suffixIndex + 1);
         sort(rightmark + 1, high, suffixIndex);
     }
-
 }
 
 void SuffixArray::swap(int first, int second) {
